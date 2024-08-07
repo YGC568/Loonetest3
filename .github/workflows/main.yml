@@ -1,7 +1,7 @@
 name: Geoglows Processing_dbhybroR
 on:
   schedule:
-    - cron: '0 9 * * *'  # cron expression runs the job daily at 4 AM EST (9 AM UTC)
+    - cron: '0 11 * * *'  # cron expression runs the job daily at 6 AM EST (11 AM UTC)
   workflow_dispatch:  # Allows manual trigger of the workflow
 jobs:
   run-script:
@@ -91,7 +91,7 @@ jobs:
         mkdir -p Outputs
 
     - name: Monthly Geoglows data preparation
-      if: github.event.schedule == '0 9 7 * *'
+      if: github.event.schedule == '0 * 7 * *'
       env:
         R_HOME: ${{ env.R_HOME }}
         R_LIBS_USER: ${{ env.R_LIBS_USER }}
@@ -116,11 +116,11 @@ jobs:
     - name: Stage all changes
       run: |
         git add Outputs/*
-        if [ "$(date +'%d')" -eq "01" ]; then git add Data_Download/*; fi
+        if [ "$(date +'%d')" -eq "07" ]; then git add Data_Download/*; fi
 
     - name: Commit and push changes
       run: |
-        if [ "$(date +'%d')" -eq "01" ]; then
+        if [ "$(date +'%d')" -eq "07" ]; then
           git commit -m "Monthly data processing at $(date +'%Y-%m-%d %H:%M:%S')"
         else
           git commit -m "Daily data processing at $(date +'%Y-%m-%d %H:%M:%S')"
