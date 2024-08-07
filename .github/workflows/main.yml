@@ -125,6 +125,6 @@ jobs:
         else
           git commit -m "Daily data processing at $(date +'%Y-%m-%d %H:%M:%S')"
         fi
-        git push https://github.com/YGC568/LOONEtest3 HEAD:main
+        git push https://github.com/YGC568/Loonetest3 HEAD:main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
