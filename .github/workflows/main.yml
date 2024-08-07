@@ -91,7 +91,7 @@ jobs:
         mkdir -p Outputs
 
     - name: Monthly Geoglows data preparation
-      if: github.event.schedule == '0 9 * * *'
+      if: github.event.schedule == '0 9 7 * *'
       env:
         R_HOME: ${{ env.R_HOME }}
         R_LIBS_USER: ${{ env.R_LIBS_USER }}
