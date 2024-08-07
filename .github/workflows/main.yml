@@ -1,7 +1,7 @@
 name: Geoglows Processing_dbhybroR
 on:
   schedule:
-    - cron: '0 11 * * *'  # cron expression runs the job daily at 6 AM EST (11 AM UTC)
+    - cron: '0 11 * * *'  # cron expression runs the job daily at 11 AM UTC
   workflow_dispatch:  # Allows manual trigger of the workflow
 jobs:
   run-script:
@@ -42,8 +42,8 @@ jobs:
     - name: Install Python dependencies
       run: |
         pip install loone-data-prep==0.1.7
-        pip install rpy2  # Install rpy2 to use R within Python
-        pip install cffi 
+        #pip install rpy2  # Install rpy2 to use R within Python
+        #pip install cffi 
 
     - name: Install system dependencies for R and rpy2
       run: |
@@ -91,15 +91,17 @@ jobs:
         mkdir -p Outputs
 
     - name: Monthly Geoglows data preparation
-      if: github.event.workflow_dispatch == '* * 7 * *'
+      if: ${{ (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch') }}
       env:
         R_HOME: ${{ env.R_HOME }}
         R_LIBS_USER: ${{ env.R_LIBS_USER }}
         LD_LIBRARY_PATH: ${{ env.LD_LIBRARY_PATH }}
       run: |
-        python -m loone_data_prep.flow_data.get_inflows Data_Download && \
-        python -m loone_data_prep.flow_data.get_outflows Data_Download && \
-        python -m loone_data_prep.flow_data.S65E_total Data_Download
+        if [ "$(date +'%d')" -eq "07" ]; then
+          python -m loone_data_prep.flow_data.get_inflows Data_Download && \
+          python -m loone_data_prep.flow_data.get_outflows Data_Download && \
+          python -m loone_data_prep.flow_data.S65E_total Data_Download
+        fi
 
     - name: Run forecast flows script
       env:
